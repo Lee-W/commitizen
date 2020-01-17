@@ -69,9 +69,11 @@ class Bump:
         try:
             current_version_instance: Version = Version(self.parameters["version"])
         except TypeError:
-            out.error("[NO_VERSION_SPECIFIED]")
-            out.error("Check if current version is specified in config file, like:")
-            out.error("version = 0.4.3")
+            out.error(
+                "[NO_VERSION_SPECIFIED]\n"
+                "Check if current version is specified in config file, like:\n"
+                "version = 0.4.3\n"
+            )
             raise SystemExit(NO_VERSION_SPECIFIED)
 
         # Initialize values from sources (conf)
