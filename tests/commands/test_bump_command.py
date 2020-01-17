@@ -40,6 +40,15 @@ def create_project():
     shutil.rmtree(full_tmp_path, handle_remove_read_only)
 
 
+@pytest.fixture(scope="function")
+def tmp_git_project(tmpdir):
+    with tmpdir.as_cwd():
+        with open("pyproject.toml", "w") as f:
+            f.write("[tool.commitizen]\n" 'version="0.1.0"')
+
+        cmd.run("git init")
+
+
 def create_file_and_commit(message: str, filename: Optional[str] = None):
     if not filename:
         filename = str(uuid.uuid4())
@@ -49,11 +58,8 @@ def create_file_and_commit(message: str, filename: Optional[str] = None):
     git.commit(message)
 
 
-def test_bump_command(mocker, create_project):
-    with open("./pyproject.toml", "w") as f:
-        f.write("[tool.commitizen]\n" 'version="0.1.0"')
-
-    cmd.run("git init")
+@pytest.mark.usefixtures('tmp_git_project')
+def test_bump_command(mocker):
 
     # MINOR
     create_file_and_commit("feat: new file")
